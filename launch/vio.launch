@@ -1,0 +1,16 @@
+<launch>
+  <arg name="manager_name" default="vio_nodelet_manager"/>
+  <arg name="calibration_file"
+       default="$(find basalt_ros1)/config/t265_example_calib.yaml"/>
+
+  <node pkg="basalt_ros1" type="vio_node"
+	name="vio_node"	clear_params="true" output="screen">
+    <param name="calibration_file" value="$(arg calibration_file)"/>
+    <remap from="~left_image" to="/camera/fisheye1/image_raw" />
+    <remap from="~right_image" to="/camera/fisheye2/image_raw" />
+    <rosparam param="imu_topics">["gyro", "accel"]</rosparam>
+    <remap from="~gyro" to="/camera/gyro/sample" />
+    <remap from="~accel" to="/camera/accel/sample" />
+  </node>
+
+</launch>

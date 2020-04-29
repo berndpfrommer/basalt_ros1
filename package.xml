@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>basalt_ros1</name>
+  <version>1.0.0</version>
+  <description>ROS1 wrapper for basalt</description>
+  <maintainer email="bernd.pfrommer@gmail.com">Bernd Pfrommer</maintainer>
+
+  <license>Apache-2.0</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>cmake_modules</build_depend>
+  
+  <depend>roscpp</depend>
+  <depend>nodelet</depend>
+  <depend>nav_msgs</depend>
+  <depend>tf</depend>
+  <depend>eigen</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>basalt</depend>
+  <depend>basalt_vio_ros1_msgs</depend>
+  <export>
+    <nodelet plugin="${prefix}/nodelet_plugin.xml"/>
+  </export>
+</package>

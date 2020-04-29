@@ -1,0 +1,26 @@
+<library path="lib/libvio_frontend_nodelet">
+  <class name="basalt_ros1/VIOFrontEndNodelet" type="basalt_ros1::VIOFrontEndNodelet"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      basalt vio front end nodelet
+    </description>
+  </class>
+</library>
+
+<library path="lib/libvio_backend_nodelet">
+  <class name="basalt_ros1/VIOBackEndNodelet" type="basalt_ros1::VIOBackEndNodelet"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      basalt vio back end nodelet
+    </description>
+  </class>
+</library>
+
+<library path="lib/libvio_nodelet">
+  <class name="basalt_ros1/VIONodelet" type="basalt_ros1::VIONodelet"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      basalt vio combined front + back end nodelet
+    </description>
+  </class>
+</library>

@@ -1,0 +1,35 @@
+<launch>
+  <arg name="calibration_file"
+       default="$(find basalt_ros1)/config/t265_example_calib.yaml"/>
+
+  <arg name="manager_name" default="vio_nodelet_manager"/>
+
+  <!-- manager nodelet -->
+  <node pkg="nodelet" type="nodelet"
+	name="$(arg manager_name)" args="manager"
+	clear_params="true" output="screen"/>
+
+  <!-- frontend nodelet  -->
+  <node pkg="nodelet" type="nodelet"
+	name="vio_front_end"
+	args="load basalt_ros1/VIOFrontEndNodelet $(arg manager_name)"
+	clear_params="true" output="screen">
+    <param name="calibration_file" value="$(arg calibration_file)"/>
+    <remap from="~left_image" to="/camera/fisheye1/image_raw" />
+    <remap from="~right_image" to="/camera/fisheye2/image_raw" />
+  </node>
+
+  <!-- backend nodelet -->
+  <node pkg="nodelet" type="nodelet"
+	name="vio_back_end"
+	args="load basalt_ros1/VIOBackEndNodelet $(arg manager_name)"
+	clear_params="true" output="screen">
+    <param name="calibration_file" value="$(arg calibration_file)"/>
+    <!-- order of imu topics is important!!! first gyro, then accel -->
+    <rosparam param="imu_topics">["gyro", "accel"]</rosparam>
+    <remap from="~gyro" to="/camera/gyro/sample" />
+    <remap from="~accel" to="/camera/accel/sample" />
+    <remap from="~optical_flow" to="/vio_front_end/optical_flow" />
+  </node>
+
+</launch>
