@@ -1,0 +1,10 @@
+<launch>
+<node name="republish_left" type="republish" pkg="image_transport"
+      output="screen"
+      args="compressed in:=/camera/fisheye1/image_raw raw
+	    out:=/camera/fisheye1/image_raw" />
+<node name="republish_right" type="republish" pkg="image_transport"
+      output="screen"
+      args="compressed in:=/camera/fisheye2/image_raw raw
+	    out:=/camera/fisheye2/image_raw" />
+</launch>
