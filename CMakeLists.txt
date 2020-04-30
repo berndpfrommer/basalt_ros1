@@ -5,6 +5,7 @@ if(NOT (DEFINED ENV{ROS_VERSION}))
    message(ERROR, "ROS_VERSION environment variable $ENV{ROS_VERSION} is not set!")
 else()
   if(NOT ($ENV{ROS_VERSION} EQUAL "1"))
+    unset(CATKIN_INSTALL_INTO_PREFIX_ROOT)
     install(TARGETS)   # nothing to install
   else()
   
