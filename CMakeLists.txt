@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(basalt_ros1)
 
-
+if(NOT (DEFINED ENV{ROS_VERSION}))
+   message(ERROR, "ROS_VERSION environment variable $ENV{ROS_VERSION} is not set!")
+else()
+  if(NOT ($ENV{ROS_VERSION} EQUAL "1"))
+    install(TARGETS)   # nothing to install
+  else()
+  
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -123,3 +129,7 @@ add_dependencies(vio_nodelet ${catkin_EXPORTED_TARGETS})
 install(FILES nodelet_plugins.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
+  endif()  # closes   if($ENV{ROS_VERSION} EQUAL "1")
+
+endif()  # closes if (DEFINED ENV{ROS_VERSION})
+
