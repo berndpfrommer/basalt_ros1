@@ -1,0 +1,24 @@
+<launch>
+  <arg name="manager_name" default="vio_nodelet_manager"/>
+  <arg name="calibration_file"
+       default="$(find basalt_ros1)/config/t265_example_calib.yaml"/>
+
+  <node pkg="basalt_ros1" type="vio_node"
+	name="vio_node"	clear_params="true" output="screen">
+    <param name="calibration_file" value="$(arg calibration_file)"/>
+    <param name="world_frame_id" value="world"/>
+    <param name="odom_frame_id" value="basalt_pose_frame"/>
+    <rosparam param="imu_topics">["gyro", "accel"]</rosparam>
+    <remap from="~left_image" to="/t265/fisheye1/image_raw" />
+    <remap from="~right_image" to="/t265/fisheye2/image_raw" />
+    <remap from="~gyro" to="/t265/gyro/sample" />
+    <remap from="~accel" to="/t265/accel/sample" />
+  </node>
+
+  <!-- need a static transform publisher that connects
+       basalt_pose_frame with t265_pose_frame -->
+
+  <node pkg="tf" type="static_transform_publisher"
+	name="basalt_to_t265_tf_broadcaster"
+	args="-0.021 0 0  -0.5 -0.5 -0.5 0.5  basalt_pose_frame  t265_pose_frame 100"/>
+</launch>
