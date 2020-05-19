@@ -38,6 +38,19 @@ Launch the unified front/backend as a node:
 
     roslaunch basalt_ros1 vio.launch
 	
-Now you need supply data from the realsense T265
+Now you need supply data from the realsense T265. Also update the
+calibration file to match your camera.
 
+# How to get the RealSense calibration
+
+To get the calibration file, do this:
+
+    rosrun basalt_ros1 get_calibration  -o my_calib_file.json
 	
+If you want to overwrite the imu noise with your own idea of
+covariance:
+
+    rosrun basalt_ros1 get_calibration  -o my_calib_file.json -a 0.5
+
+
+

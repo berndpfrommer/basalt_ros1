@@ -36,6 +36,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(Eigen3 REQUIRED QUIET)
 find_package(TBB REQUIRED)
+find_package(realsense2 QUIET)
 
 
 # Flags used for CHECK_CXX_SOURCE_COMPILES
@@ -123,6 +124,13 @@ add_dependencies(vio_node ${catkin_EXPORTED_TARGETS})
 add_library(vio_nodelet src/vio_nodelet.cpp)
 target_link_libraries(vio_nodelet basalt_ros1  ${catkin_LIBRARIES} ${TBB_LIBRARIES})
 add_dependencies(vio_nodelet ${catkin_EXPORTED_TARGETS})
+
+# --- realsense tools ---
+if(realsense2_FOUND)
+  add_executable(get_calibration src/get_calibration.cpp)
+  target_link_libraries(get_calibration
+  ${catkin_LIBRARIES} ${TBB_LIBRARIES})
+endif()
 
 
 # --- install ---
