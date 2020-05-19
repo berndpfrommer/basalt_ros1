@@ -48,16 +48,16 @@ static geometry_msgs::TransformStamped to_tf_msg(
 }
 
 namespace basalt_ros1 {
-  VIOPublisher::VIOPublisher(const ros::NodeHandle &node)
-    : node_(node) {
-
-    tfBroadCaster_ = std::make_shared<tf2_ros::TransformBroadcaster>();
-    pub_ = node_.advertise<nav_msgs::Odometry>("odom", 10);
+VIOPublisher::VIOPublisher(const ros::NodeHandle &node) : node_(node) {
+  tfBroadCaster_ = std::make_shared<tf2_ros::TransformBroadcaster>();
+  pub_ = node_.advertise<nav_msgs::Odometry>("odom", 10);
   // we don't do covariance quite yet....
   cov_ = {0.01, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.01, 0.00,
           0.00, 0.00, 0.00, 0.00, 0.00, 0.01, 0.00, 0.00, 0.00,
           0.00, 0.00, 0.00, 0.01, 0.00, 0.00, 0.00, 0.00, 0.00,
           0.00, 0.01, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.01};
+  node_.param<std::string>("world_frame_id", msg_.header.frame_id, "world");
+  node_.param<std::string>("odom_frame_id", msg_.child_frame_id, "odom");
 }
 
 void VIOPublisher::publish(const basalt::PoseVelBiasState::Ptr &data) {
@@ -66,30 +66,26 @@ void VIOPublisher::publish(const basalt::PoseVelBiasState::Ptr &data) {
   const Eigen::Vector3d ang_vel = data->vel_w_i;
 
   // make odometry message
-  nav_msgs::Odometry msg;
-  msg.header.frame_id = "world";
-  msg.child_frame_id = "body";
+  msg_.header.stamp.sec = data->t_ns / 1000000000LL;
+  msg_.header.stamp.nsec = data->t_ns % 1000000000LL;
 
-  msg.header.stamp.sec = data->t_ns / 1000000000LL;
-  msg.header.stamp.nsec = data->t_ns % 1000000000LL;
+  msg_.pose.pose.position = to_ros_point(T);
+  msg_.pose.pose.orientation = to_ros_quat(q);
 
-  msg.pose.pose.position = to_ros_point(T);
-  msg.pose.pose.orientation = to_ros_quat(q);
+  msg_.pose.covariance = cov_;
+  msg_.twist.twist.linear = to_ros_vec(ang_vel);
+  msg_.twist.covariance = cov_;  // zero matrix
 
-  msg.pose.covariance = cov_;
-  msg.twist.twist.linear = to_ros_vec(ang_vel);
-  msg.twist.covariance = cov_;  // zero matrix
-
-  pub_.publish(msg);
+  pub_.publish(msg_);
 #if 0
-  std::cout << "position: " << msg.pose.pose.position.x << " "
-            << msg.pose.pose.position.y << " " << msg.pose.pose.position.z
+  std::cout << "position: " << msg_.pose.pose.position.x << " "
+            << msg_.pose.pose.position.y << " " << msg_.pose.pose.position.z
             << std::endl;
 #endif
   // make transform message
-  const ros::Time t(msg.header.stamp.sec, msg.header.stamp.nsec);
+  const ros::Time t(msg_.header.stamp.sec, msg_.header.stamp.nsec);
   const geometry_msgs::TransformStamped tf =
-      to_tf_msg(t, q, T, msg.header.frame_id, msg.child_frame_id);
+      to_tf_msg(t, q, T, msg_.header.frame_id, msg_.child_frame_id);
 
   tfBroadCaster_->sendTransform(tf);
 }

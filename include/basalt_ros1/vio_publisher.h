@@ -24,5 +24,6 @@ class VIOPublisher {
   std::shared_ptr<tf2_ros::TransformBroadcaster> tfBroadCaster_;
   ros::Publisher pub_;
   boost::array<double, 36> cov_;
+  nav_msgs::Odometry msg_;
 };
 }  // namespace basalt_ros1
