@@ -58,12 +58,33 @@ VIOPublisher::VIOPublisher(const ros::NodeHandle &node) : node_(node) {
           0.00, 0.01, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.01};
   node_.param<std::string>("world_frame_id", msg_.header.frame_id, "world");
   node_.param<std::string>("odom_frame_id", msg_.child_frame_id, "odom");
+  std::vector<double> ext_trans = {0, 0, 0};
+  std::vector<double> ext_q = {1.0, 0, 0, 0};
+  if (node_.getParam("extra_translation", ext_trans)) {
+    if (ext_trans.size() != 3) {
+      ROS_ERROR_STREAM("extra_translation must have 3 elements!");
+      throw std::invalid_argument("extra translation must have 3 elements");
+    }
+  }
+  if (node_.getParam("extra_rotation", ext_q)) {
+    if (ext_q.size() != 4) {
+      ROS_ERROR_STREAM("extra_rotation must have 4 elements!");
+      throw std::invalid_argument("extra rotation must have 4 elements");
+    }
+  }
+
+  T_extra_ = Eigen::Vector3d(ext_trans[0], ext_trans[1], ext_trans[2]);
+  q_extra_ = Eigen::Quaterniond(ext_q[0], ext_q[1], ext_q[2], ext_q[3]);
+  extraTF_ = T_extra_.norm() > 0.001 || q_extra_.w() < 0.99999;
 }
 
 void VIOPublisher::publish(const basalt::PoseVelBiasState::Ptr &data) {
-  const Eigen::Vector3d T = data->T_w_i.translation();
-  const Eigen::Quaterniond q = data->T_w_i.unit_quaternion();
+  const Eigen::Vector3d T_orig = data->T_w_i.translation();
+  const Eigen::Quaterniond q_orig = data->T_w_i.unit_quaternion();
   const Eigen::Vector3d ang_vel = data->vel_w_i;
+
+  const Eigen::Vector3d T = extraTF_ ? (q_extra_ * T_orig + T_extra_) : T_orig;
+  const Eigen::Quaterniond q = extraTF_ ? (q_extra_ * q_orig) : q_orig;
 
   // make odometry message
   msg_.header.stamp.sec = data->t_ns / 1000000000LL;
@@ -77,11 +98,6 @@ void VIOPublisher::publish(const basalt::PoseVelBiasState::Ptr &data) {
   msg_.twist.covariance = cov_;  // zero matrix
 
   pub_.publish(msg_);
-#if 0
-  std::cout << "position: " << msg_.pose.pose.position.x << " "
-            << msg_.pose.pose.position.y << " " << msg_.pose.pose.position.z
-            << std::endl;
-#endif
   // make transform message
   const ros::Time t(msg_.header.stamp.sec, msg_.header.stamp.nsec);
   const geometry_msgs::TransformStamped tf =

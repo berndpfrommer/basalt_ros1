@@ -14,6 +14,7 @@
 namespace basalt_ros1 {
 class VIOPublisher {
  public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   VIOPublisher(const ros::NodeHandle& node);
 
   void publish(const basalt::PoseVelBiasState::Ptr& data);
@@ -25,5 +26,8 @@ class VIOPublisher {
   ros::Publisher pub_;
   boost::array<double, 36> cov_;
   nav_msgs::Odometry msg_;
+  bool extraTF_{false};
+  Eigen::Vector3d T_extra_;    // extra translation:T_world_basaltworld
+  Eigen::Quaterniond q_extra_;  // extra quaternion: q_world_basaltworld
 };
 }  // namespace basalt_ros1
