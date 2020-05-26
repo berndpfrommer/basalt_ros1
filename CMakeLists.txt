@@ -29,7 +29,9 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   nav_msgs
   sensor_msgs
-  tf
+  #tf
+  tf2
+  tf2_ros
   basalt_vio_ros1_msgs
   basalt
 )
@@ -53,7 +55,7 @@ set(CMAKE_CXX_FLAGS_CIDEBUG  "-O0 -DEIGEN_INITIALIZE_MATRICES_BY_NAN")          
 set(CMAKE_CXX_FLAGS_CIRELWITHDEBINFO "-O3 -DEIGEN_INITIALIZE_MATRICES_BY_NAN")  # CI version with no debug symbols
 
 # base set of compile flags
-set(BASALT_CXX_FLAGS "-Wall -Wextra -Werror -Wno-error=unused-parameter -ftemplate-backtrace-limit=0")
+set(BASALT_CXX_FLAGS "-Wall -Wextra  -Wno-error=unused-parameter -ftemplate-backtrace-limit=0")
 
 
 # OpenMP option and compile flags
