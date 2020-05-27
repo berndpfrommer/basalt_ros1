@@ -130,14 +130,31 @@ if(realsense2_FOUND)
   add_executable(get_calibration src/get_calibration.cpp)
   target_link_libraries(get_calibration
   ${catkin_LIBRARIES} ${TBB_LIBRARIES})
+  install(TARGETS get_calibration
+        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+	LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 endif()
 
 
 # --- install ---
 
-install(FILES nodelet_plugins.xml
+install(FILES nodelet_plugin.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
+install(TARGETS vio_frontend_node vio_backend_node vio_node
+                basalt_ros1 vio_frontend_nodelet vio_backend_nodelet vio_nodelet
+        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+install(DIRECTORY launch/
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch)
+
+install(DIRECTORY config/
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config)
+
+
   endif()  # closes   if($ENV{ROS_VERSION} EQUAL "1")
 
 endif()  # closes if (DEFINED ENV{ROS_VERSION})
