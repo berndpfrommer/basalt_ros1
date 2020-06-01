@@ -1,7 +1,7 @@
 <launch>
   <arg name="manager_name" default="vio_nodelet_manager"/>
   <arg name="calibration_file"
-       default="$(find basalt_ros1)/config/t265_example_calib.yaml"/>
+       default="$(find basalt_ros1)/config/t265_example_calib.json"/>
   <!-- manager nodelet -->
   <node pkg="nodelet" type="nodelet"
 	name="$(arg manager_name)" args="manager"
