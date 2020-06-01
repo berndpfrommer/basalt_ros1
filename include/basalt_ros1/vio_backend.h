@@ -29,6 +29,7 @@ class VIOBackEnd {
   typedef std::shared_ptr<OpticalFlowInputQueue> OpticalFlowInputQueuePtr;
   VIOBackEnd(const ros::NodeHandle& node,
              const basalt::Calibration<double>& calib,
+             const basalt::VioConfig& config,
              OpticalFlowResultQueue** opt_flow_queue);
 
   tbb::concurrent_bounded_queue<basalt::OpticalFlowResult::Ptr>*

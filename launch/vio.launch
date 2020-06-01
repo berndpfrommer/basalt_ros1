@@ -2,10 +2,13 @@
   <arg name="manager_name" default="vio_nodelet_manager"/>
   <arg name="calibration_file"
        default="$(find basalt_ros1)/config/t265_example_calib.json"/>
+  <arg name="vio_config_file"
+       default="$(find basalt_ros1)/config/t265_example_vio_config.json"/>
 
   <node pkg="basalt_ros1" type="vio_node"
 	name="vio_node"	clear_params="true" output="screen">
     <param name="calibration_file" value="$(arg calibration_file)"/>
+    <param name="vio_config_file" value="$(arg vio_config_file)"/>
     <!--
 	allow for extra rotation/translation between basalt world
 	and real world

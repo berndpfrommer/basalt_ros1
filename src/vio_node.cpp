@@ -16,17 +16,14 @@ int main(int argc, char** argv) {
 
   try {
     basalt::Calibration<double> calib;
-    std::string calibFile;
-    if (!pnh.getParam("calibration_file", calibFile)) {
-      ROS_ERROR_STREAM("must specify calibration_file!");
-      throw std::invalid_argument("no calibration_file specified");
-    }
-    basalt_ros1::load_calib(&calib, calibFile);
-    basalt_ros1::VIOFrontEnd frontEnd(pnh, calib);
+    basalt::VioConfig vioConfig;
+    basalt_ros1::load_calib_and_config(pnh, &calib, &vioConfig);
+
+    basalt_ros1::VIOFrontEnd frontEnd(pnh, calib, vioConfig);
     // front and backend communicate via a direct queue
     basalt_ros1::VIOBackEnd::OpticalFlowResultQueue** q =
         frontEnd.getOpticalFlowQueue();
-    basalt_ros1::VIOBackEnd backEnd(pnh, calib, q);
+    basalt_ros1::VIOBackEnd backEnd(pnh, calib, vioConfig, q);
     backEnd.start();
     frontEnd.initialize();
     ros::spin();

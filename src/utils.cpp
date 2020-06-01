@@ -30,4 +30,24 @@ void load_calib(basalt::Calibration<double> *calib,
                                  calib_path);
   }
 }
+
+void load_calib_and_config(ros::NodeHandle &nh,
+                           basalt::Calibration<double> *calib,
+                           basalt::VioConfig *config) {
+  std::string calibFile;
+  if (!nh.getParam("calibration_file", calibFile)) {
+    ROS_ERROR_STREAM("must specify calibration_file!");
+    throw std::invalid_argument("no calibration_file specified");
+  }
+  load_calib(calib, calibFile);
+
+  // load config
+  config->optical_flow_skip_frames = 1;
+  std::string vioConfigFile;
+  if (nh.getParam("vio_config_file", vioConfigFile)) {
+    config->load(vioConfigFile);
+  }
+  nh.param<bool>("debug_vio", config->vio_debug, false);
+  nh.param<bool>("debug_bad_data", config->vio_debug_bad_data, false);
+}
 }  // namespace basalt_ros1

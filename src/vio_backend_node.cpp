@@ -14,14 +14,12 @@ int main(int argc, char** argv) {
 
   try {
     basalt::Calibration<double> calib;
-    std::string calibFile;
-    if (!pnh.getParam("calibration_file", calibFile)) {
-      ROS_ERROR_STREAM("must specify calibration_file!");
-      throw std::invalid_argument("no calibration_file specified");
-    }
-    basalt_ros1::load_calib(&calib, calibFile);
+    basalt::VioConfig vioConfig;
+    basalt_ros1::load_calib_and_config(pnh, &calib, &vioConfig);
+
     basalt_ros1::VIOBackEnd::OpticalFlowResultQueue** q = NULL;
-    basalt_ros1::VIOBackEnd node(pnh, calib, q);
+
+    basalt_ros1::VIOBackEnd node(pnh, calib, vioConfig, q);
     node.start();
     ros::spin();
   } catch (const std::exception& e) {

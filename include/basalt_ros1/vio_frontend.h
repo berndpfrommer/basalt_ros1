@@ -18,7 +18,8 @@ namespace basalt_ros1 {
 class VIOFrontEnd {
  public:
   VIOFrontEnd(const ros::NodeHandle& nh,
-              const basalt::Calibration<double>& calib);
+              const basalt::Calibration<double>& calib,
+              const basalt::VioConfig& config);
 
   VIOFrontEnd(const VIOFrontEnd&) = delete;
   VIOFrontEnd& operator=(const VIOFrontEnd&) = delete;
@@ -40,6 +41,7 @@ class VIOFrontEnd {
   ros::NodeHandle node_;
   basalt::OpticalFlowBase::Ptr opticalFlow_;
   basalt::Calibration<double> calibration_;
+  basalt::VioConfig config_;
   std::shared_ptr<ImageSubscriber> imageSub_;
   std::shared_ptr<OpticalFlowPublisher> opticalFlowPub_;
   tbb::concurrent_bounded_queue<basalt::OpticalFlowResult::Ptr>*

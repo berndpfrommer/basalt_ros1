@@ -15,21 +15,12 @@ static T get_param(const ros::NodeHandle& node, const std::string& key,
 namespace basalt_ros1 {
 VIOBackEnd::VIOBackEnd(const ros::NodeHandle& node,
                        const basalt::Calibration<double>& calib,
+                       const basalt::VioConfig& config,
                        OpticalFlowResultQueue** opt_flow_queue)
     : node_(node) {
-  // TODO(Bernd):
-  // config could/should be loaded as well, not just defaults used
-  basalt::VioConfig vio_config;
-  vio_config.optical_flow_skip_frames = 1;
-
-  vio_config.vio_debug = get_param(node_, "debug_vio", false);
-  vio_config.vio_debug_bad_data = get_param(node_, "debug_bad_data", false);
-  ROS_INFO_STREAM("VIO debug: " << (vio_config.vio_debug ? " TRUE" : " FALSE"));
-  ROS_INFO_STREAM("VIO debug bad data: " << (vio_config.vio_debug_bad_data));
-
   // create VIO object
   vio_ = basalt::VioEstimatorFactory::getVioEstimator(
-      vio_config, calib, basalt::constants::g, true);
+      config, calib, basalt::constants::g, true);
   vio_->initialize(Eigen::Vector3d::Zero(), Eigen::Vector3d::Zero());
 
   // if no external queue is provided, subscribe to

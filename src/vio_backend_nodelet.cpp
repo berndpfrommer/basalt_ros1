@@ -13,16 +13,14 @@ namespace basalt_ros1 {
 class VIOBackEndNodelet : public nodelet::Nodelet {
  public:
   void onInit() override {
-    basalt::Calibration<double> calib;
     nh_ = getPrivateNodeHandle();
-    std::string calibFile;
-    if (!nh_.getParam("calibration_file", calibFile)) {
-      ROS_ERROR_STREAM("must specify calibration_file!");
-      throw std::invalid_argument("no calibration_file specified");
-    }
-    load_calib(&calib, calibFile);
+    basalt::Calibration<double> calib;
+    basalt::VioConfig vioConfig;
+    basalt_ros1::load_calib_and_config(nh_, &calib, &vioConfig);
+
     basalt_ros1::VIOBackEnd::OpticalFlowResultQueue **q = NULL;
-    node_.reset(new VIOBackEnd(nh_, calib, q));
+
+    node_.reset(new VIOBackEnd(nh_, calib, vioConfig, q));
     node_->start();
   }
 

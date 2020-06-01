@@ -17,18 +17,15 @@ class VIONodelet : public nodelet::Nodelet {
  public:
   void onInit() override {
     basalt::Calibration<double> calib;
+    basalt::VioConfig vioConfig;
     nh_ = getPrivateNodeHandle();
-    std::string calibFile;
-    if (!nh_.getParam("calibration_file", calibFile)) {
-      ROS_ERROR_STREAM("must specify calibration_file!");
-      throw std::invalid_argument("no calibration_file specified");
-    }
-    load_calib(&calib, calibFile);
-    frontEnd_.reset(new basalt_ros1::VIOFrontEnd(nh_, calib));
+    load_calib_and_config(nh_, &calib, &vioConfig);
+
+    frontEnd_.reset(new basalt_ros1::VIOFrontEnd(nh_, calib, vioConfig));
     // front and backend communicate via a direct queue
     basalt_ros1::VIOBackEnd::OpticalFlowResultQueue** q =
         frontEnd_->getOpticalFlowQueue();
-    backEnd_.reset(new basalt_ros1::VIOBackEnd(nh_, calib, q));
+    backEnd_.reset(new basalt_ros1::VIOBackEnd(nh_, calib, vioConfig, q));
     // now start them both
     backEnd_->start();
     frontEnd_->initialize();
