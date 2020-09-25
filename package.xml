@@ -16,6 +16,9 @@
   <depend>eigen</depend>
   <depend>sensor_msgs</depend>
   <depend>std_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>message_filters</depend>
+  <depend>image_transport</depend>
   <depend>basalt</depend>
   <depend>basalt_vio_ros1_msgs</depend>
   <export>

@@ -1,0 +1,7 @@
+<launch>
+  <node pkg="basalt_ros1" type="viz_flow_node"
+	name="viz_flow"	clear_params="true" output="screen">
+    <remap from="~left_image" to="/t265/fisheye1/image_raw" />
+    <remap from="~optical_flow" to="/vio_front_end/optical_flow" />
+  </node>
+</launch>

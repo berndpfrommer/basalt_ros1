@@ -30,6 +30,9 @@ find_package(catkin REQUIRED COMPONENTS
   nav_msgs
   sensor_msgs
   tf
+  cv_bridge
+  message_filters
+  image_transport
   basalt_vio_ros1_msgs
   basalt
 )
@@ -37,6 +40,7 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(Eigen3 REQUIRED QUIET)
 find_package(TBB REQUIRED)
 find_package(realsense2 QUIET)
+find_package(OpenCV QUIET)
 
 
 # Flags used for CHECK_CXX_SOURCE_COMPILES
@@ -72,6 +76,7 @@ set(CMAKE_CXX_FLAGS "-std=c++17 ${BASALT_CXX_FLAGS} -march=${CXX_MARCH} ${BASALT
 catkin_package(
 	INCLUDE_DIRS include
 	CATKIN_DEPENDS roscpp nodelet
+	DEPENDS OpenCV
 	)
 	
 include_directories(
@@ -81,6 +86,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${basalt_INCLUDE_DIRS}
   ${TBB_INCLUDE_DIR}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 add_library(basalt_ros1
@@ -136,6 +142,10 @@ if(realsense2_FOUND)
         RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 endif()
 
+# --- viz node ---
+add_executable(viz_flow_node src/viz_flow_node.cpp)
+target_link_libraries(viz_flow_node ${catkin_LIBRARIES})
+add_dependencies(viz_flow_node ${catkin_EXPORTED_TARGETS})
 
 # --- install ---
 
