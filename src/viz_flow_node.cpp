@@ -31,34 +31,34 @@ public:
     pub_ = it_->advertise("flow_image", 2);
   }
 private:
-  void flowCallback(const Image::ConstPtr &imgMsg,
-                    const OptFlow::ConstPtr &optFlow) {
-    const auto imgPtr = cv_bridge::toCvShare(
-      imgMsg, sensor_msgs::image_encodings::MONO8);
-    const int h = imgPtr->image.rows;
-    const int w = imgPtr->image.cols;
-    cv::Mat img(h, w, CV_8UC3);
-    cv::cvtColor(imgPtr->image, img, CV_GRAY2RGB);
-    cv::Scalar kpColor(0, 255, 0);
-    for (const auto obs_idx : irange(0ul, optFlow->observations.size())) {
-      const auto& msg_obs = optFlow->observations[obs_idx];
-      for (const auto kp_idx : irange(0ul, msg_obs.keypoints.size())) {
-        cv::Point2f p(msg_obs.keypoints[kp_idx].affine_transform[4e],
-                      msg_obs.keypoints[kp_idx].affine_transform[5]);
-        cv::circle(img, p, 3, kpColor, -1);
-      }
-    }
-    cv_bridge::CvImage outMsg(imgMsg->header, "bgr8", img);
-    pub_.publish(outMsg.toImageMsg());
-  }
-  // ----------- variables ---------
-  ros::NodeHandle node_;
-  message_filters::Subscriber<Image> camSub_;
-  message_filters::Subscriber<OptFlow> flowSub_;
-  image_transport::Publisher pub_;
+ void flowCallback(const Image::ConstPtr& imgMsg,
+                   const OptFlow::ConstPtr& optFlow) {
+   const auto imgPtr =
+       cv_bridge::toCvShare(imgMsg, sensor_msgs::image_encodings::MONO8);
+   const int h = imgPtr->image.rows;
+   const int w = imgPtr->image.cols;
+   cv::Mat img(h, w, CV_8UC3);
+   cv::cvtColor(imgPtr->image, img, CV_GRAY2RGB);
+   cv::Scalar kpColor(0, 255, 0);
+   for (const auto obs_idx : irange(0ul, optFlow->observations.size())) {
+     const auto& msg_obs = optFlow->observations[obs_idx];
+     for (const auto kp_idx : irange(0ul, msg_obs.keypoints.size())) {
+       cv::Point2f p(msg_obs.keypoints[kp_idx].affine_transform[4],
+                     msg_obs.keypoints[kp_idx].affine_transform[5]);
+       cv::circle(img, p, 3, kpColor, -1);
+     }
+   }
+   cv_bridge::CvImage outMsg(imgMsg->header, "bgr8", img);
+   pub_.publish(outMsg.toImageMsg());
+ }
+ // ----------- variables ---------
+ ros::NodeHandle node_;
+ message_filters::Subscriber<Image> camSub_;
+ message_filters::Subscriber<OptFlow> flowSub_;
+ image_transport::Publisher pub_;
 
-  std::shared_ptr<image_transport::ImageTransport> it_;
-  std::shared_ptr<message_filters::TimeSynchronizer<Image, OptFlow>> sync_;
+ std::shared_ptr<image_transport::ImageTransport> it_;
+ std::shared_ptr<message_filters::TimeSynchronizer<Image, OptFlow>> sync_;
 };
 
 int main(int argc, char** argv) {
