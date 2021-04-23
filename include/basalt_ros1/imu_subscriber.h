@@ -50,5 +50,6 @@ class IMUSubscriber {
   long int max_q_{0};
   uint64_t combinedFramesReceived_{0};
   ros::Time lastTime_;
+  double lastSentTimeStamp_{-1.0};
 };
 }  // namespace basalt_ros1
