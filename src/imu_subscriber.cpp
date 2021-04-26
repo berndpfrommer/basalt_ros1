@@ -89,7 +89,7 @@ void IMUSubscriber::callback_accel(ImuConstPtr const &accel) {
     data->accel = accel_interp;
     data->gyro << gyroMsg->angular_velocity.x, gyroMsg->angular_velocity.y,
         gyroMsg->angular_velocity.z;
-    if (gyroMsg->header.stamp < lastMsgTime_) {
+    if (gyroMsg->header.stamp <= lastMsgTime_) {
       ROS_WARN_STREAM("dropping IMU message with old timestamp: " << gyroMsg->header.stamp);
     } else {
       lastMsgTime_ = gyroMsg->header.stamp;
@@ -118,7 +118,7 @@ void IMUSubscriber::printFrameRate() {
 }
 
 void IMUSubscriber::callback_combined(ImuConstPtr const & msg) {
-  if (msg->header.stamp < lastMsgTime_) {
+  if (msg->header.stamp <= lastMsgTime_) {
     ROS_WARN_STREAM("dropping IMU message with old timestamp: " << msg->header.stamp);
     return;
   }
