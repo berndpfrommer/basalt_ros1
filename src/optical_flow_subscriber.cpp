@@ -27,10 +27,10 @@ void OpticalFlowSubscriber::callback(OpticalFlowMsgConstPtr const& msg) {
   basalt::OpticalFlowResult::Ptr data(new basalt::OpticalFlowResult());
   data->t_ns = msg->header.stamp.sec * 1000000000LL + msg->header.stamp.nsec;
   data->observations.resize(msg->observations.size());
-  for (const auto obs_idx : irange(0ul, msg->observations.size())) {
+  for (const auto obs_idx : irange(size_t{0}, msg->observations.size())) {
     const auto& msg_obs = msg->observations[obs_idx];
     auto& data_obs = data->observations[obs_idx];
-    for (const auto kp_idx : irange(0ul, msg_obs.keypoints.size())) {
+    for (const auto kp_idx : irange(size_t{0}, msg_obs.keypoints.size())) {
       const auto kp_id = msg_obs.keypoints[kp_idx].id;
       // copy affine transform
       for (const auto i : irange(0, 6)) {
