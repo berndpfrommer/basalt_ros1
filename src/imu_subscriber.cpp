@@ -90,15 +90,15 @@ void IMUSubscriber::callback_accel(ImuConstPtr const &accel) {
     data->gyro << gyroMsg->angular_velocity.x, gyroMsg->angular_velocity.y,
         gyroMsg->angular_velocity.z;
     if (gyroMsg->header.stamp <= lastMsgTime_) {
-      ROS_WARN_STREAM("dropping IMU message with old timestamp: " << gyroMsg->header.stamp);
+      ROS_WARN_STREAM(
+          "dropping IMU message with old timestamp: " << gyroMsg->header.stamp);
     } else {
       lastMsgTime_ = gyroMsg->header.stamp;
       if (queue_) {
         if (!queue_->try_push(data)) {
-          ROS_WARN_STREAM("IMU data dropped due to overflow: q_len = "
-                          << queue_->size());
+          ROS_WARN_STREAM(
+              "IMU data dropped due to overflow: q_len = " << queue_->size());
         }
-        max_q_ = std::max(queue_->size(), max_q_);
       }
     }
   }
@@ -117,9 +117,10 @@ void IMUSubscriber::printFrameRate() {
   }
 }
 
-void IMUSubscriber::callback_combined(ImuConstPtr const & msg) {
+void IMUSubscriber::callback_combined(ImuConstPtr const &msg) {
   if (msg->header.stamp <= lastMsgTime_) {
-    ROS_WARN_STREAM("dropping IMU message with old timestamp: " << msg->header.stamp);
+    ROS_WARN_STREAM(
+        "dropping IMU message with old timestamp: " << msg->header.stamp);
     return;
   }
   lastMsgTime_ = msg->header.stamp;
@@ -133,10 +134,9 @@ void IMUSubscriber::callback_combined(ImuConstPtr const & msg) {
       msg->angular_velocity.z;
   if (queue_) {
     if (!queue_->try_push(data)) {
-      ROS_WARN_STREAM("IMU data dropped due to overflow: q_len = "
-                      << queue_->size());
+      ROS_WARN_STREAM(
+          "IMU data dropped due to overflow: q_len = " << queue_->size());
     }
-    max_q_ = std::max(queue_->size(), max_q_);
   }
   printFrameRate();
 }

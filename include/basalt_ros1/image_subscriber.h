@@ -41,7 +41,6 @@ class ImageSubscriber {
   std::shared_ptr<message_filters::TimeSynchronizer<Image, Image>> sync_;
   std::vector<std::shared_ptr<message_filters::Subscriber<Image>>> subs_;
   OpticalFlowInputQueue* queue_{nullptr};
-  long int max_q_{0};
   uint64_t framesReceived_{0};
   ros::Time lastTime_;
 };

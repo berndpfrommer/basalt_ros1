@@ -70,7 +70,6 @@ void ImageSubscriber::callback(ImageConstPtr const& left,
       ROS_WARN_STREAM("image frame " << data->t_ns
                                      << " dropped due to queue overflow");
     }
-    max_q_ = std::max(queue_->size(), max_q_);
   }
 }
 }  // namespace basalt_ros1

@@ -40,9 +40,9 @@ private:
    cv::Mat img(h, w, CV_8UC3);
    cv::cvtColor(imgPtr->image, img, CV_GRAY2RGB);
    cv::Scalar kpColor(0, 255, 0);
-   for (const auto obs_idx : irange(0ul, optFlow->observations.size())) {
+   for (const auto obs_idx : irange(size_t{0}, optFlow->observations.size())) {
      const auto& msg_obs = optFlow->observations[obs_idx];
-     for (const auto kp_idx : irange(0ul, msg_obs.keypoints.size())) {
+     for (const auto kp_idx : irange(size_t{0}, msg_obs.keypoints.size())) {
        cv::Point2f p(msg_obs.keypoints[kp_idx].affine_transform[4],
                      msg_obs.keypoints[kp_idx].affine_transform[5]);
        cv::circle(img, p, 3, kpColor, -1);

@@ -47,7 +47,6 @@ class IMUSubscriber {
   std::list<ImuConstPtr> gyroQueue_;
   ImuConstPtr prevAccel_;
   ImuDataQueue* queue_{nullptr};
-  long int max_q_{0};
   uint64_t combinedFramesReceived_{0};
   ros::Time lastTime_;
   ros::Time lastMsgTime_;
